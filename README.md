@@ -8,15 +8,15 @@
 
 news 主要涉及环境，详细信息见 `requirements.txt`：
 
-```text
-python	 3.7.2
-Scrapy   1.6
-selenium 3.141
-mouse    0.7
-PyMySQL  0.9.3
-```
+| 名称           | 版本   |
+| -------------- | ------ |
+| python         | 3.7.2  |
+| Scrapy         | 1.6    |
+| requests       | 2.21.0 |
+| selenium       | 3.141  |
+| mouse          | 0.7    |
+| PyMySQL        | 0.9.3  |
+| fake-useragent | 0.1.11 |
 
 ***
-
-此处有坑，待填。
 

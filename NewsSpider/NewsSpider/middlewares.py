@@ -6,7 +6,9 @@
 # https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
-
+from fake_useragent import UserAgent
+from selenium import webdriver
+from scrapy.http import HtmlResponse
 
 class NewsspiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -101,3 +103,35 @@ class NewsspiderDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class RandomUserAgentMiddleware(object):
+    # 随机更换 user-agent
+    def __init__(self, crawler):
+        super().__init__()
+        self.ua = UserAgent()
+        self.ua_type = crawler.settings.get('UA_TYPE', 'random')
+
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(crawler)
+
+    def process_request(self, request, spider):
+        def get_ua():
+            return getattr(self.ua, self.ua_type)
+        a = get_ua()
+        request.headers.setdefault('User-Agent', get_ua())
+
+
+class JSPageMiddleware(object):
+    # 通过selenium 请求动态网页
+    def process_request(self, request, spider):
+        if spider.name == "sina":
+            spider.browser.get(request.url)
+            import time
+            time.sleep(5)
+            return HtmlResponse(
+                url=spider.browser.current_url,
+                body=spider.browser.page_source,
+                encoding="utf-8",
+                request=request)

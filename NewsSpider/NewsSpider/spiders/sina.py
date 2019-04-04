@@ -1,21 +1,29 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import time
 from selenium import webdriver
-
+from scrapy import signals
+from scrapy.xlib.pydispatch import dispatcher
 
 class SinaSpider(scrapy.Spider):
     name = 'sina'
     allowed_domains = ['news.sina.com.cn']
     start_urls = ['https://news.sina.com.cn/roll/']
 
-    def start_requests(self):
-        browser = webdriver.Chrome(executable_path=r'C:\GitHub\spiders\NewsSpider\tools\chromedriver.exe')
-        browser.get(self.start_urls[0])
-        time.sleep(10)
-        return [scrapy.Request(url=self.start_urls[0], dont_filter=True)]
+    custom_settings = {
+        'DOWNLOADER_MIDDLEWARES':{
+            'NewsSpider.middlewares.JSPageMiddleware':1,
+        }
+    }
+    
+    def __init__(self):
+        self.browser = webdriver.Chrome(executable_path=r'C:\GitHub\spiders\NewsSpider\tools\chromedriver.exe')
+        super().__init__()
+        dispatcher.connect(self.spider_closed, signals.spider_closed)
+    
+    def spider_closed(self, spider):
+        print('Spider closed')
+        self.browser.quit()
     
     def parse(self, response):
-        time_created = response.xpath('//span[@class="c_time"]/text()')
+        time_created = response.xpath('//span[@class="c_time"]/text()').extract()
         print(time_created)
-        pass
