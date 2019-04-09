@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import datetime
 from scrapy.http import Request
+from scrapy.loader import ItemLoader
+from NewsSpider.items import ChinanewsItem
 
 
 class ChinanewsSpider(scrapy.Spider):
@@ -12,7 +15,14 @@ class ChinanewsSpider(scrapy.Spider):
         'DOWNLOADER_MIDDLEWARES':{
             'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
             'NewsSpider.middlewares.RandomUserAgentMiddleware': 1,
-        }
+        },
+        'ITEM_PIPELINES':{            
+            'NewsSpider.pipelines.ChinanewsImagesPipeline':1,
+            #'NewsSpider.pipelines.JsonExporterPipleline': 2,
+            'NewsSpider.pipelines.MysqlTwistedPipline':2,
+        },
+        'IMAGES_URLS_FIELD':'image_url',
+        'IMAGES_STORE':'NewsSpider/images',
     }
 
     def parse(self, response):
@@ -20,21 +30,18 @@ class ChinanewsSpider(scrapy.Spider):
         for news_url in news_urls:
             if 'shipin' not in news_url:
                 yield Request(url=news_url, callback=self.parse_detail)
-        # yield Request(url='http://www.chinanews.com/news2.html', callback=self.parse)
+        #yield Request(url='http://www.chinanews.com/news2.html', callback=self.parse)
 
     def parse_detail(self, response):
-        title = response.css('#cont_1_1_2>h1::text').extract()[0].strip()
-        category = response.xpath('//div[@id="nav"]/a[2]/text()').extract()
-        time_created = response.css('div.left-t::text').extract()[0].strip()[:-4]
-        source = response.css('div.left-t>a:nth-child(1)::text').extract()
-        content = response.css('div.left_zw>p::text').extract()
-        content = '\n'.join([i.strip() for i in content[1:]])
-        editor = response.css('.left_name .left_name::text').extract()
-        if editor:
-            editor = editor[0].strip()[4:-1] 
-        else:    
-            editor = 'None'
-        
-        print('xx')
+        item_loader = ItemLoader(item=ChinanewsItem(), response=response)
+        item_loader.add_value('url', response.url)
+        item_loader.add_css('title', '#cont_1_1_2>h1::text')
+        item_loader.add_xpath('category', '//div[@id="nav"]/a[2]/text()')
+        item_loader.add_css('time_created', 'div.left-t::text')
+        item_loader.add_css('source', 'div.left-t>a:nth-child(1)::text')
+        item_loader.add_css('content', 'div.left_zw>p::text')
+        item_loader.add_css('image_url', '.left_zw img::attr(src),.left_ph img::attr(src)')
+        item_loader.add_css('editor', '.left_name .left_name::text')
+        news_item = item_loader.load_item()
 
-
+        yield news_item
