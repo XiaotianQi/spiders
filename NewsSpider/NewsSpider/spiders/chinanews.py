@@ -17,12 +17,12 @@ class ChinanewsSpider(scrapy.Spider):
             'NewsSpider.middlewares.RandomUserAgentMiddleware': 1,
         },
         'ITEM_PIPELINES':{            
-            'NewsSpider.pipelines.ChinanewsImagesPipeline':1,
-            #'NewsSpider.pipelines.JsonExporterPipleline': 2,
-            'NewsSpider.pipelines.MysqlTwistedPipline':2,
+            # 'NewsSpider.pipelines.ChinanewsImagesPipeline':1,
+            # 'NewsSpider.pipelines.JsonExporterPipleline': 2,
+            'NewsSpider.pipelines.MysqlTwistedPipline':1,
         },
-        'IMAGES_URLS_FIELD':'image_url',
-        'IMAGES_STORE':'NewsSpider/images',
+        # 'IMAGES_URLS_FIELD':'image_url',
+        # 'IMAGES_STORE':'NewsSpider/images',
     }
 
     def parse(self, response):
@@ -40,7 +40,7 @@ class ChinanewsSpider(scrapy.Spider):
         item_loader.add_css('time_created', 'div.left-t::text')
         item_loader.add_css('source', 'div.left-t>a:nth-child(1)::text')
         item_loader.add_css('content', 'div.left_zw>p::text')
-        item_loader.add_css('image_url', '.left_zw img::attr(src),.left_ph img::attr(src)')
+        # item_loader.add_css('image_url', '.left_zw img::attr(src),.left_ph img::attr(src)')
         item_loader.add_css('editor', '.left_name .left_name::text')
         news_item = item_loader.load_item()
 
