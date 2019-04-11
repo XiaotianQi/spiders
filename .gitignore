@@ -1,5 +1,7 @@
 # Windows:
 images/
+cookies/
+textExport.json
 
 # Python:
 *.py[cod]
