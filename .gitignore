@@ -1,6 +1,8 @@
 # Windows:
 images/
 cookies/
+test/
+.vscode/
 textExport.json
 
 # Python:

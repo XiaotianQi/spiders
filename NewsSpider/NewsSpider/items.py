@@ -55,3 +55,28 @@ class ChinanewsItem(scrapy.Item):
             source, content, editor
             )
         return insert_sql, params
+
+
+class ZhihuHotItem(scrapy.Item):
+    url = scrapy.Field()
+    url_id = scrapy.Field()
+    title = scrapy.Field()
+    content = scrapy.Field()
+    answer_count = scrapy.Field()
+    hot = scrapy.Field()
+    
+    def get_insert_sql(self):
+        url = self['url']
+        url_id = get_md5(url)
+        title = self['title']
+        content = self['content']
+        answer_count = self['answer_count']
+        hot = int(self['hot'].split()[0])
+
+        insert_sql = '''
+            INSERT INTO zhihu_hot(url, url_id, title, content, answer_count, hot) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE answer_count=VALUES(answer_count), hot=VALUES(hot)
+        '''
+        params = (url, url_id, title, content, answer_count, hot)
+        return insert_sql, params

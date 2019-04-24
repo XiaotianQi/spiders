@@ -30,7 +30,7 @@ class ChinanewsImagesPipeline(ImagesPipeline):
 class JsonExporterPipleline(object):
     # 调用scrapy提供的json export导出json文件
     def __init__(self):
-        self.file = open('chinanewsExport.json', 'wb')
+        self.file = open('testExport.json', 'wb')
         self.exporter = JsonItemExporter(self.file, encoding="utf-8", ensure_ascii=False)
         self.exporter.start_exporting()
     

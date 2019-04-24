@@ -9,6 +9,9 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+import os
+import sys
+
 BOT_NAME = 'NewsSpider'
 
 SPIDER_MODULES = ['NewsSpider.spiders']
@@ -90,6 +93,9 @@ AUTOTHROTTLE_ENABLED = True
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+BASE_DIR = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.join(BASE_DIR, 'NewsSpider'))
 
 MYSQL_HOST = 'localhost'
 MYSQL_PORT = 3306
