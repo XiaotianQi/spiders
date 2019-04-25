@@ -80,3 +80,10 @@ class ZhihuHotItem(scrapy.Item):
         '''
         params = (url, url_id, title, content, answer_count, hot)
         return insert_sql, params
+
+
+class SinaNewsRollItem(scrapy.Item):
+    url = scrapy.Field()
+    url_id = scrapy.Field()
+    title = scrapy.Field()
+    intro = scrapy.Field()

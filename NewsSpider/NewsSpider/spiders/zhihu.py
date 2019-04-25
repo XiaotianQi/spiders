@@ -45,7 +45,7 @@ class ZhihuSpider(scrapy.Spider):
             chrome_option.add_argument('--disable-extensions')
             chrome_option.add_experimental_option('debuggerAddress', '127.0.0.1:9222')
             browser = webdriver.Chrome(
-                executable_path=BASE_DIR+ r'\cookies\zhihu.cookies',
+                executable_path=BASE_DIR+r'\tools\chromedriver.exe',
                 chrome_options=chrome_option)
             browser.get('https://www.zhihu.com/signin')
             browser.find_element_by_css_selector('.SignFlow-accountInput.Input-wrapper input').send_keys(Keys.CONTROL + 'a')
