@@ -30,7 +30,16 @@ class SinaNewsRollSpider(scrapy.Spider):
     def parse_detail(self, response):
         item_loader = ItemLoader(item=SinaNewsRollItem(), response=response)
         item_loader.add_value('intro', response.meta.get('intro'))
+        item_loader.add_value('url', response.url)
         item_loader.add_css('title', '.main-title::text')
-        
+        item_loader.add_css('category', '.channel-path>a::text')
+        if not item_loader.add_css('source', '.date-source>a::text'):
+            item_loader.add_xpath('source', '//*[@class="source ent-source"]/text()')
+            item_loader.add_xpath('date', '//*[@class="date"]/text()')
+        else:    
+            item_loader.add_css('source', '.date-source>a::text')
+            item_loader.add_css('date', '.date-source>span::text')
+        item_loader.add_css('content', '.article>p::text')
+        item_loader.add_css('keywords', '#keywords>a::text')
         news_item = item_loader.load_item()
         yield news_item

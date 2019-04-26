@@ -87,3 +87,27 @@ class SinaNewsRollItem(scrapy.Item):
     url_id = scrapy.Field()
     title = scrapy.Field()
     intro = scrapy.Field()
+    category = scrapy.Field()
+    source = scrapy.Field()
+    date = scrapy.Field()
+    content = scrapy.Field()
+    keywords = scrapy.Field()
+
+    def get_insert_sql(self):
+        url = self['url'][0]
+        url_id = get_md5(url)
+        title = self['title'][0]
+        intro = self['intro'][0]
+        category = ','.join(self['category'])
+        source = self['source'][0]
+        date = self['date'][0]
+        content = '\n'.join([i.strip() for i in self['content']])
+        keywords = ','.join(self['keywords'])
+
+        insert_sql = '''
+            INSERT INTO sina_news_roll(url, url_id, title, intro, category, source, date, content, keywords) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON DUPLICATE KEY UPDATE content=VALUES(content)
+        '''
+        params = (url, url_id, title, intro, category, source, date, content, keywords)
+        return insert_sql, params
