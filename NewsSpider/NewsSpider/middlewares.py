@@ -9,6 +9,8 @@ from scrapy import signals
 from fake_useragent import UserAgent
 from selenium import webdriver
 from scrapy.http import HtmlResponse
+from tools.xici_daili import get_random_ip
+
 
 class NewsspiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -103,6 +105,12 @@ class NewsspiderDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class RandomProxyMiddleware(object):
+    #动态设置ip代理
+    def process_request(self, request, spider):
+        request.meta['proxy'] = get_random_ip()
 
 
 class RandomUserAgentMiddleware(object):
