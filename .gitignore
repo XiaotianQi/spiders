@@ -4,6 +4,7 @@ cookies/
 test/
 .vscode/
 textExport.json
+test.py
 
 # Python:
 *.py[cod]
