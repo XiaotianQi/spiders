@@ -111,3 +111,12 @@ class SinaNewsRollItem(scrapy.Item):
         '''
         params = (url, url_id, title, intro, category, source, date, content, keywords)
         return insert_sql, params
+
+class TestItem(scrapy.Item):
+    name = scrapy.Field()
+
+    file_urls = scrapy.Field()  # 指定文件下载的连接
+    files = scrapy.Field()      # 文件下载完成后会往里面写相关的信息
+
+    image_urls = scrapy.Field()
+    images = scrapy.Field()
